@@ -1,0 +1,68 @@
+version: '2.3'
+services:
+
+  client:
+    depends_on:
+      - server
+    build:
+      context: ./Profile-veiwer
+      dockerfile: Dockerfile
+    image: amuthan6/react-profile
+    ports:
+      - 3000:3000
+    stdin_open: true
+    environment:
+      #NODE_ENV: development
+      PORT: 3000
+    working_dir: /usr/src/app
+    volumes:
+      - ./Profile-veiwer:/usr/src/app
+    links:
+      - server:server
+    
+  server:
+    depends_on:
+      - mysql
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: amuthan6/node-profile
+    ports:
+      - 3009:3009
+    environment:
+        DATABASE_HOST: "mysql"
+        DATABASE_NAME: "test_db"
+        DATABASE_USER: "user"
+        DATABASE_PASSWORD: "Beyondm@6" 
+    working_dir: /usr/src/app
+    volumes:
+      - ./server/src/server.js:/usr/src/app/app.js
+      - ./server/src/controllers:/usr/src/app/controllersS
+      - ./server/src/config:/usr/src/app/config
+      - ./server/src/model:/usr/src/app/model
+      - ./server/src/routes:/usr/src/app/routes
+      - ./server/src/middleware:/usr/src/app/middleware
+      - ./server/package.json:/usr/package.json
+    links:
+      - mysql:mysql
+
+  mysql:
+    container_name: mysqldb
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_HOST: "127.0.0.1"
+      MYSQL_ROOT_PASSWORD: "Beyondm@6"
+      MYSQL_DATABASE: "test_db"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD: "Beyondm@6" 
+    ports:
+      - "3306:3306"
+    expose:
+      - 3306
+    volumes:
+      - dbdata:/var/lib/mysql
+    restart: unless-stopped
+
+volumes: 
+    dbdata:

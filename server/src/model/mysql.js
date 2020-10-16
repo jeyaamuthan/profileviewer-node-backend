@@ -1,12 +1,13 @@
+const dbConfig = require("../config/db.config.js");
 var Sequelize = require('sequelize');
 
 const sequelize = new Sequelize(
-  'auxemp',
-  'root',
-  'root',
+  dbConfig.DB,
+  dbConfig.USER,
+  dbConfig.PASSWORD,
   {
-    host: 'localhost',
-    dialect: 'mysql'
+    host: dbConfig.HOST,
+    dialect: dbConfig.dialect
   }
 );
 sequelize
